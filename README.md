@@ -1,6 +1,8 @@
-# Для Audi A4 B9 с установленной mib2q-carplay 1.5+
+# For Audi A4 B9 running mib2q-carplay 1.5+
 
-`apply/mod/custom.sh` создаёт или перезаписывает только `/mnt/app/root/aa_cluster.insets` следующим содержимым:
+`apply/mod/custom.sh` creates or overwrites two files:
+
+`/mnt/app/root/aa_cluster.insets` with the following contents:
 
 ```text
 47 166 130 290
@@ -8,11 +10,14 @@
 58 166 484 394
 ```
 
-`restore/mod/custom.sh` удаляет этот файл, если он существует. После удаления используются встроенные поля релиза 1.5.
+`/mnt/app/root/aa_cluster.dpi` containing a single number, `125`.
 
-Бэкапы, дополнительные настройки и журналы эти скрипты не создают. Библиотеки и DPI не меняются. Проверок версии и контрольных сумм нет.
-Для записи в MMI используется стандартный `mount -uw /mnt/app`; при запуске на другом узле выполняется переход на mmx через `on`. `command.sh` — обёртка для совместимости с меню M.I.B.
+Valid values are integers from 80 to 400. The same value applies to Full, Classic and Sport. Higher DPI makes UI elements larger.
 
-Отключите телефон, скопируйте содержимое `apply` в корень карты с M.I.B. с заменой двух файлов в `mod`, затем запустите `GEM → M.I.B. → Advanced Settings → Run individual script`. Дождитесь `DONE`, затем подключите телефон заново.
+`restore/mod/custom.sh` deletes both files if they exist, restoring the release's built-in insets and DPI 125.
 
-Для возврата встроенных полей скопируйте содержимое `restore` в корень карты и выполните тот же пункт меню. Переподключите телефон. Предыдущее содержимое файла при этом не восстанавливается: файл удаляется.
+The scripts do not create backups or logs, modify libraries, or check versions or checksums. They use the standard `mount -uw /mnt/app` command to enable writing on the MMI. When launched on another node, execution is forwarded to mmx using `on`. `command.sh` is a compatibility wrapper for the M.I.B. menu.
+
+Disconnect the phone, copy the contents of `apply` to the root of the M.I.B. card, replacing the two files in `mod`, then select `GEM → M.I.B. → Advanced Settings → Run individual script`. Wait for `DONE`, then reconnect the phone.
+
+To restore the built-in insets and DPI, copy the contents of `restore` to the card root and select the same menu item. Reconnect the phone afterward. This deletes the files rather than restoring their previous contents.

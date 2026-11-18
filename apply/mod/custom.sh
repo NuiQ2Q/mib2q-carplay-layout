@@ -1,5 +1,5 @@
 #!/bin/sh
-# M.I.B. custom action: write Android Auto cluster insets.
+# M.I.B. custom action: write Android Auto cluster insets and DPI.
 set -u
 PATH=/proc/boot:/bin:/usr/bin:/usr/sbin:/sbin:/mnt/app/armle/bin:/mnt/app/armle/usr/bin
 export PATH
@@ -25,6 +25,7 @@ if [ ! -d /mnt/app/eso/hmi/lsd ]; then
 fi
 
 F=/mnt/app/root/aa_cluster.insets
+DPI_FILE=/mnt/app/root/aa_cluster.dpi
 if [ ! -d /mnt/app/root ]; then
     echo "AA INSETS: ERROR - /mnt/app/root is absent"
     exit 1
@@ -42,8 +43,16 @@ then
     echo "AA INSETS: ERROR - cannot write $F"
     exit 1
 fi
-if ! chmod 644 "$F" 2>&1; then
-    echo "AA INSETS: ERROR - cannot set permissions on $F"
+# Edit the number below to change DPI for all layouts (80..400; default 125).
+if ! cat > "$DPI_FILE" <<'EOF'
+125
+EOF
+then
+    echo "AA DPI: ERROR - cannot write $DPI_FILE"
+    exit 1
+fi
+if ! chmod 644 "$F" "$DPI_FILE" 2>&1; then
+    echo "AA INSETS: ERROR - cannot set permissions on $F and $DPI_FILE"
     exit 1
 fi
 if ! sync 2>&1; then
@@ -57,4 +66,10 @@ if ! cat "$F"; then
     exit 1
 fi
 echo "AA INSETS: DONE - $F written"
+echo "AA DPI: file contents:"
+if ! cat "$DPI_FILE"; then
+    echo "AA DPI: ERROR - cannot read back $DPI_FILE"
+    exit 1
+fi
+echo "AA DPI: DONE - $DPI_FILE written"
 echo "Reconnect the phone to apply."

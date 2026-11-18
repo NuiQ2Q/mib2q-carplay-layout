@@ -1,5 +1,5 @@
 #!/bin/sh
-# mib2q-carplay 1.5: remove custom insets and use built-in geometry.
+# mib2q-carplay 1.5: remove custom insets and DPI to use built-in defaults.
 set -eu
 PATH=/proc/boot:/bin:/usr/bin:/usr/sbin:/sbin:/mnt/app/armle/bin:/mnt/app/armle/usr/bin
 export PATH
@@ -12,8 +12,10 @@ if [ ! -d /mnt/app/eso/hmi/lsd ] && [ -d /net/mmx/mnt/app/eso/hmi/lsd ]; then
 fi
 
 F=/mnt/app/root/aa_cluster.insets
+DPI_FILE=/mnt/app/root/aa_cluster.dpi
 mount -uw /mnt/app 2>/dev/null || :
-rm -f "$F"
+rm -f "$F" "$DPI_FILE"
 sync
 echo "DONE. $F removed (if present)."
-echo "Reconnect the phone to use the built-in insets."
+echo "DONE. $DPI_FILE removed (if present)."
+echo "Reconnect the phone to use the built-in insets and DPI."
